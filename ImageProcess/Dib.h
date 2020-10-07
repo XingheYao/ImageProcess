@@ -12,6 +12,13 @@
 
 #include <afx.h>
 #include <afxwin.h>
+
+extern "C" {
+#include "jpeglib.h"
+}
+
+#pragma comment(lib, "libjpeg.lib")
+
 class CDib : public CObject
 {
 public:
