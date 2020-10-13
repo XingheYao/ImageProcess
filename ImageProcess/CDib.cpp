@@ -72,7 +72,7 @@ CDib::~CDib(void)
 
 }
 //=====================================
-//函数功能：从文件加载位图
+//函数功能：从文件加载bmp位图
 //输入函数：LPCTSTR lpszPath表示待加载位图文件路径
 //返回值：BOOL-TRUE表示成功，FALSE表示失败
 //=====================================
@@ -132,6 +132,162 @@ BOOL CDib::LoadFromFile(CString lpszPath)
 		m_bValid = FALSE;//不是位图文件
 		return FALSE;
 	}
+}
+//=====================================
+//函数功能：从文件加载bmp位图
+//输入函数：LPCTSTR lpszPath表示待加载位图文件路径
+//返回值：BOOL-TRUE表示成功，FALSE表示失败
+//=====================================
+BOOL CDib::LoadJPGFromFile(CString lpszPath)
+{
+	//打开JPG文件
+	m_fileName = lpszPath;
+	FILE* JPGFile;
+	//以读模式打开位图文件
+	errno_t err;
+	if ((err = _tfopen_s(&JPGFile, lpszPath, _T("rb")))!= 0)
+	{
+		return FALSE;
+	}
+	Empty(FALSE);//清理空间
+
+	struct jpeg_decompress_struct cinfo;
+	struct jpeg_error_mgr jerr;
+	JSAMPARRAY buffer;
+	LPBYTE src_buff;
+	LPBYTE point;
+
+	cinfo.err = jpeg_std_error(&jerr);    //一下为libjpeg函数，具体参看相关文档
+	jpeg_create_decompress(&cinfo);
+	jpeg_stdio_src(&cinfo, JPGFile);
+	jpeg_read_header(&cinfo, TRUE);
+	jpeg_start_decompress(&cinfo);
+
+	unsigned long width = cinfo.output_width;
+	unsigned long height = cinfo.output_height;
+	unsigned short depth = cinfo.output_components;
+	unsigned long headersize;
+	unsigned long filesize;
+	DWORD dwDibSize;
+
+	src_buff = new BYTE[width * height * depth];
+	memset(src_buff, 0, sizeof(unsigned char) * width * height * depth);
+
+	buffer = (*cinfo.mem->alloc_sarray)
+		((j_common_ptr)&cinfo, JPOOL_IMAGE, width * depth, 1);
+
+	point = src_buff;
+	while (cinfo.output_scanline < height)
+	{
+		jpeg_read_scanlines(&cinfo, buffer, 1);    //读取一行jpg图像数据到buffer
+		memcpy(point, *buffer, width * depth);    //将buffer中的数据逐行给src_buff
+		point += width * depth;            //一次改变一行
+	}
+
+	//写入bmp_Header
+	if (depth == 1)
+	{
+		headersize = 14 + 40 + 256 * 4;
+		filesize = headersize + width * height;
+	}
+
+	if (depth == 3)
+	{
+		headersize = 14 + 40;
+		filesize = headersize + width * height * depth;
+	}
+	//设置位图文件头
+	m_lpBmpFileHeader = (LPBITMAPFILEHEADER)new BYTE[sizeof(BITMAPFILEHEADER)];
+	memset(m_lpBmpFileHeader, 0, sizeof(BITMAPFILEHEADER));
+	m_lpBmpFileHeader->bfType = 0x4D42;
+	m_lpBmpFileHeader->bfSize = filesize;
+	m_lpBmpFileHeader->bfOffBits = headersize;
+	//计算除位图文件头的空间大小，分配空间并初始化为0
+	dwDibSize = filesize - 14;
+	m_lpDib = (LPBYTE)new BYTE[dwDibSize];
+	memset(m_lpDib, 0, dwDibSize);
+
+	m_lpBmpInfo = (LPBITMAPINFO)m_lpDib;//设置位图信息指针
+	m_lpBmpInfoHeader = (LPBITMAPINFOHEADER)m_lpDib;//设置位图信息头指针
+	m_lpBmpInfoHeader->biSize = 40;
+	m_lpBmpInfoHeader->biWidth = width;
+	m_lpBmpInfoHeader->biHeight = height;
+	m_lpBmpInfoHeader->biPlanes = 1;
+	m_lpBmpInfoHeader->biBitCount = (unsigned short)depth * 8;
+	m_lpBmpInfoHeader->biSizeImage = width * height * depth;
+	//m_lpBmpInfoHeader->biXPelsPerMeter = 3780;
+	//m_lpBmpInfoHeader->biYPelsPerMeter = 3780;
+
+
+	if (depth == 1)//灰度图像要添加调色板
+	{
+		CString seedBmp("seed.bmp");
+		CFile seedFile;
+		//以读模式打开位图文件
+		if (!seedFile.Open(seedBmp, CFile::modeRead | CFile::shareDenyWrite))
+		{
+			return FALSE;
+		}
+		//若是位图文件，计算除位图文件头的空间大小，分配空间并初始化为0
+		DWORD dwDibSize = seedFile.GetLength() - sizeof(BITMAPFILEHEADER);
+		LPBYTE lpSeedDib = (LPBYTE)new BYTE[dwDibSize];
+		memset(lpSeedDib, 0, dwDibSize);
+		seedFile.Read(lpSeedDib, dwDibSize);//读取除位图文件头的所有数据
+		seedFile.Close();//关闭位图文件
+		LPBITMAPINFOHEADER lpSeedInfoHeader = (LPBITMAPINFOHEADER)lpSeedDib;//设置位图信息头指针
+		m_lpRgbQuad = (LPRGBQUAD)(lpSeedDib + lpSeedInfoHeader->biSize);//颜色表指针
+		if (lpSeedInfoHeader->biClrUsed == 0)
+		{
+			lpSeedInfoHeader->biClrUsed = GetNumOfColor();
+		}
+		if (m_lpRgbQuad == (LPRGBQUAD)lpSeedDib)
+		{
+			m_lpRgbQuad = nullptr;//将位图颜色表指针置空
+			m_bHasRgbQuad = FALSE;//无颜色表
+		}
+		else
+		{
+			m_bHasRgbQuad = TRUE;//有颜色表
+			MakePalette();//根据颜色表生成调色板
+		}
+		delete [] lpSeedDib;
+	}
+	else
+	{
+		m_lpRgbQuad = nullptr;//将位图颜色表指针置空
+		m_bHasRgbQuad = FALSE;//无颜色表
+	}
+	DWORD dwRgbQuadLength = CalcRgbQuadLength();//计算颜色表长度
+	//写入bmp_Data
+	m_lpData = m_lpDib + 40 + dwRgbQuadLength;//数据指针
+	point = src_buff + width * depth * (height - 1);    //倒着写数据，bmp格式是倒的，jpg是正的
+	for (unsigned long i = 0; i < height; i++)
+	{
+		for (unsigned long j = 0; j < width * depth; j += depth)
+		{
+			if (depth == 1)        //处理灰度图
+			{
+				m_lpData[j] = point[j];
+			}
+
+			if (depth == 3)        //处理彩色图
+			{
+				m_lpData[j + 2] = point[j + 0];//R
+				m_lpData[j + 1] = point[j + 1];//G
+				m_lpData[j + 0] = point[j + 2];//B
+			}
+		}
+		point -= width * depth;
+	}
+	m_bValid = TRUE;//位图有效
+	
+	//清除临时变量
+	jpeg_finish_decompress(&cinfo);
+	jpeg_destroy_decompress(&cinfo);
+	delete[] src_buff;
+	fclose(JPGFile);
+
+	return TRUE;
 }
 //============================================
 //函数功能：将位图保存到文件

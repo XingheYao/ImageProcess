@@ -9,7 +9,9 @@
 //      位图的转换
 //		位图的相关判断
 //================================================
-
+#include <iostream>
+#include <stdio.h>
+using namespace std;
 #include <afx.h>
 #include <afxwin.h>
 
@@ -26,6 +28,7 @@ public:
 	CDib(CDib& rhs);                                    //构造函数，初始化数据成员
 	~CDib(void);										//析构函数，释放内存空间	
 	BOOL LoadFromFile(CString lpszPath);				//从文件加载位图
+	BOOL LoadJPGFromFile(CString lpszPath);				//从文件加载JPG位图
 	BOOL SaveToFile(CString lpszPath);					//将位图保存到文件
 	CString GetFileName();								//获取位图文件名
 	LONG GetWidth();									//获取位图宽度

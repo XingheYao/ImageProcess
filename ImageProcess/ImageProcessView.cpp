@@ -68,26 +68,22 @@ void CImageProcessView::OnDraw(CDC* pDC)
 		return;
 
 	// TODO: 在此处为本机数据添加绘制代码
-	
-	if (m_EntName == "bmp")
+
+	if (m_Image.IsValid())
 	{
-		if (m_Image.IsValid())
+		m_initPoint.x = 0;
+		m_initPoint.y = 0;
+		LONG width=m_Image.GetWidth();
+		for (int i = 0; i < MAXNUM; ++i)
 		{
-			m_initPoint.x = 0;
-			m_initPoint.y = 0;
-			LONG width=m_Image.GetWidth();
-			for (int i = 0; i < MAXNUM; ++i)
+			if (m_pAllImages[i] != nullptr)
 			{
-				if (m_pAllImages[i] != nullptr)
-				{
-					m_pAllImages[i]->Draw(pDC, m_initPoint, m_pAllImages[i]->GetDimension());
-					m_initPoint.x = (width +10)* (i+1);
-				}
+				m_pAllImages[i]->Draw(pDC, m_initPoint, m_pAllImages[i]->GetDimension());
+				m_initPoint.x = (width +10)* (i+1);
 			}
 		}
-		
-		return;
-	}
+	}		
+	return;
 }
 
 
@@ -173,10 +169,18 @@ void CImageProcessView::OnFileOpen()
 				m_pAllImages[i]->Empty(true);
 			m_pAllImages[i] = nullptr;
 		}
-		m_Image.LoadFromFile(dlg.GetPathName());//获得图片的地址，并且加载图片
-		//m_OriginName = dlg.GetPathName();     //获取文件路径名   
 		m_EntName = dlg.GetFileExt();      //获取文件扩展名
 		m_EntName.MakeLower();             //将文件扩展名转换为一个小写字符
+		if (m_EntName == "bmp")
+			m_Image.LoadFromFile(dlg.GetPathName());//获得图片的地址，并且加载图片
+		else if (m_EntName == "jpg")
+			m_Image.LoadJPGFromFile(dlg.GetPathName());
+		else
+		{
+			return;
+		}
+		//m_OriginName = dlg.GetPathName();     //获取文件路径名   
+
 		m_pAllImages[0]=&m_Image;
 		
 		Invalidate(TRUE);                    //调用该函数就会调用OnDraw重绘画图
@@ -244,17 +248,19 @@ void CImageProcessView::OnShowOrigin()
 {
 
 	// TODO: 在此添加命令处理程序代码
-	if (!m_pAllImages[0])
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
 		return;
+	}
+		
 	CDib* pTest = new CDib(m_Image);
 
 	LPBYTE TempData = (pTest->GetData());
 	for (int i = 0; i < 5 * pTest->GetLineByte(); ++i)
 		TempData[i] = 0;
-	pTest->RgbToGrade();
 	m_pAllImages[1] = pTest;
-
-	pTest->m_title = "hello";
+	pTest->m_title = "测试图像";
 	Invalidate();
 }
 
