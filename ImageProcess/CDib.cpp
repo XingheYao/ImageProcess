@@ -165,7 +165,7 @@ BOOL CDib::LoadJPGFromFile(CString lpszPath)
 
 	unsigned long width = cinfo.output_width;
 	unsigned long height = cinfo.output_height;
-	unsigned short depth = cinfo.output_components;
+	unsigned long depth = cinfo.output_components;
 	unsigned long headersize;
 	unsigned long filesize;
 	DWORD dwDibSize;
@@ -261,20 +261,20 @@ BOOL CDib::LoadJPGFromFile(CString lpszPath)
 	//写入bmp_Data
 	m_lpData = m_lpDib + 40 + dwRgbQuadLength;//数据指针
 	point = src_buff + width * depth * (height - 1);    //倒着写数据，bmp格式是倒的，jpg是正的
-	for (unsigned long i = 0; i < height; i++)
+	for (int i = 0; i < height; i++)
 	{
-		for (unsigned long j = 0; j < width * depth; j += depth)
+		for (int j = 0; j < width * depth; j += depth)
 		{
 			if (depth == 1)        //处理灰度图
 			{
-				m_lpData[j] = point[j];
+				m_lpData[i * width * depth + j] = point[j];
 			}
 
 			if (depth == 3)        //处理彩色图
 			{
-				m_lpData[j + 2] = point[j + 0];//R
-				m_lpData[j + 1] = point[j + 1];//G
-				m_lpData[j + 0] = point[j + 2];//B
+				m_lpData[i * width * depth + j + 2] = point[j + 0];//R
+				m_lpData[i * width * depth + j + 1] = point[j + 1];//G
+				m_lpData[i * width * depth + j + 0] = point[j + 2];//B
 			}
 		}
 		point -= width * depth;
