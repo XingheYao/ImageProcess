@@ -68,18 +68,34 @@ void CImageProcessView::OnDraw(CDC* pDC)
 		return;
 
 	// TODO: 在此处为本机数据添加绘制代码
-
+	// 获取客户区的大小
+	CRect rect;
+	GetClientRect(rect);
+	// 设置为灰色背景
+	pDC->FillSolidRect(rect, RGB(230, 230, 230));
+	int windowWidth = rect.Width();
+	int windowHeight = rect.Height();
 	if (m_Image.IsValid())
 	{
 		m_initPoint.x = 0;
 		m_initPoint.y = 0;
-		LONG width=m_Image.GetWidth();
+		LONG width = m_Image.GetWidth();
+		LONG height = m_Image.GetHeight();
 		for (int i = 0; i < MAXNUM; ++i)
 		{
 			if (m_pAllImages[i] != nullptr)
 			{
+				if ((m_initPoint.x + width) > windowWidth)
+				{
+					m_initPoint.x = 0;
+					m_initPoint.y += height + 30;
+					/*if ((m_initPoint.y + height) > windowHeight)
+					{
+						MessageBox(L"图片显示超出窗口！");
+					}*/
+				}
 				m_pAllImages[i]->Draw(pDC, m_initPoint, m_pAllImages[i]->GetDimension());
-				m_initPoint.x = (width +10)* (i+1);
+				m_initPoint.x += (width +10);				
 			}
 		}
 	}		
@@ -259,7 +275,7 @@ void CImageProcessView::OnShowOrigin()
 	LPBYTE TempData = (pTest->GetData());
 	for (int i = 0; i < 5 * pTest->GetLineByte(); ++i)
 		TempData[i] = 0;
-	m_pAllImages[1] = pTest;
+	
 	pTest->m_title = "测试图像";
 	Invalidate();
 }

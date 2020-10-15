@@ -10,7 +10,7 @@
 CDib::CDib(void)
 {
 	//数据成员初始化
-	m_title = "原始图像";
+	m_title = "";
 	m_fileName="";
 	m_lpBmpFileHeader = nullptr;
 	m_lpDib = nullptr;
@@ -78,6 +78,7 @@ CDib::~CDib(void)
 //=====================================
 BOOL CDib::LoadFromFile(CString lpszPath)
 {
+	m_title = "原始图像";
 	m_fileName = lpszPath;
 	CFile dibFile;
 	//以读模式打开位图文件
@@ -140,6 +141,7 @@ BOOL CDib::LoadFromFile(CString lpszPath)
 //=====================================
 BOOL CDib::LoadJPGFromFile(CString lpszPath)
 {
+	m_title = "原始图像";
 	//打开JPG文件
 	m_fileName = lpszPath;
 	FILE* JPGFile;
@@ -509,7 +511,7 @@ BOOL CDib::Draw(CDC* pDc, CPoint origin, CSize size)
 	//将位图在pDc所指的设备上进行显示
 	StretchDIBits(pDc->GetSafeHdc(),origin.x,origin.y,size.cx,size.cy,0,0,
 		GetWidth(),GetHeight(),m_lpData,m_lpBmpInfo,DIB_RGB_COLORS,SRCCOPY);
-	pDc->TextOut(origin.x+0.3*size.cx, size.cy+5, m_title);
+	pDc->TextOut(origin.x + 0.3 * size.cx, origin.y + size.cy + 5, m_title);
 	if (holdPalette != nullptr)
 	{
 		SelectPalette(pDc->GetSafeHdc(), holdPalette, TRUE);

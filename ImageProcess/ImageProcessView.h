@@ -4,7 +4,7 @@
 
 #pragma once
 #include "Dib.h"
-#define MAXNUM 5
+#define MAXNUM 10
 #include "geometricTransformation.h"
 class CImageProcessView : public CView
 {
