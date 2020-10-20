@@ -272,11 +272,12 @@ void CImageProcessView::OnShowOrigin()
 		
 	CDib* pTest = new CDib(m_Image);
 
-	LPBYTE TempData = (pTest->GetData());
+	/*LPBYTE TempData = (pTest->GetData());
 	for (int i = 0; i < 5 * pTest->GetLineByte(); ++i)
-		TempData[i] = 0;
-	
+		TempData[i] = 0;*/
+	pTest->RgbToGrade();
 	pTest->m_title = "测试图像";
+	m_pAllImages[1] = pTest;
 	Invalidate();
 }
 
