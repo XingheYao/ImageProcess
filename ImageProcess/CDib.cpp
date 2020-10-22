@@ -199,70 +199,76 @@ BOOL CDib::LoadJPGFromFile(CString lpszPath)
 	}
 	Empty(FALSE);//清理空间
 
-	struct jpeg_decompress_struct cinfo;
-	struct jpeg_error_mgr jerr;
-	JSAMPARRAY buffer;
-	LPBYTE src_buff;
-	LPBYTE point;
+	struct jpeg_decompress_struct cinfo;//定义JPEG文件的解压信息
+	struct jpeg_error_mgr jerr;//定义JPEG文件的错误信息
+	JSAMPARRAY buffer;	//定义缓冲区
+	LPBYTE lpJPGData;
+	LPBYTE lpDataPoint;
 
-	cinfo.err = jpeg_std_error(&jerr);    //一下为libjpeg函数，具体参看相关文档
+	cinfo.err = jpeg_std_error(&jerr);    //libjpeg函数，具体参看相关文档
 	jpeg_create_decompress(&cinfo);
 	jpeg_stdio_src(&cinfo, JPGFile);
 	jpeg_read_header(&cinfo, TRUE);
 	jpeg_start_decompress(&cinfo);
 
-	unsigned long width = cinfo.output_width;
-	unsigned long height = cinfo.output_height;
-	unsigned long depth = cinfo.output_components;
-	unsigned long headersize;
-	unsigned long filesize;
-	DWORD dwDibSize;
-
-	src_buff = new BYTE[width * height * depth];
-	memset(src_buff, 0, sizeof(unsigned char) * width * height * depth);
+	DWORD width = cinfo.output_width;
+	DWORD height = cinfo.output_height;
+	DWORD depth = cinfo.output_components;
+	DWORD headerSize = 0;
+	DWORD fileSize = 0;
+	DWORD dwDibSize, dwJPGDataSize, dwBMPDataSize, uBmpLineByte, uJPGLineByte;
+	uBmpLineByte = ((width * (depth * 8)) + 31) / 32 * 4;
+	dwJPGDataSize = width * height * depth;
+	dwBMPDataSize = uBmpLineByte * height;
+	uJPGLineByte = width * depth;
+	lpJPGData = new BYTE[dwJPGDataSize];
+	memset(lpJPGData, 0, sizeof(BYTE) * dwJPGDataSize);
 
 	buffer = (*cinfo.mem->alloc_sarray)
-		((j_common_ptr)&cinfo, JPOOL_IMAGE, width * depth, 1);
+	((j_common_ptr)&cinfo, JPOOL_IMAGE, uJPGLineByte, 1);
 
-	point = src_buff;
+	lpDataPoint = lpJPGData;
+
+
 	while (cinfo.output_scanline < height)
 	{
 		jpeg_read_scanlines(&cinfo, buffer, 1);    //读取一行jpg图像数据到buffer
-		memcpy(point, *buffer, width * depth);    //将buffer中的数据逐行给src_buff
-		point += width * depth;            //一次改变一行
+		memcpy(lpDataPoint, *buffer, uJPGLineByte);    //将buffer中的数据逐行给lpJPGData
+		lpDataPoint += uJPGLineByte;            //一次改变一行
 	}
 
 	//写入bmp_Header
 	if (depth == 1)
 	{
-		headersize = 14 + 40 + 256 * 4;
-		filesize = headersize + width * height;
+		headerSize = 14 + 40 + 256 * 4;
+		fileSize = headerSize + dwBMPDataSize;
 	}
 
 	if (depth == 3)
 	{
-		headersize = 14 + 40;
-		filesize = headersize + width * height * depth;
+		headerSize = 14 + 40;
+		fileSize = headerSize + dwBMPDataSize;
 	}
 	//设置位图文件头
 	m_lpBmpFileHeader = (LPBITMAPFILEHEADER)new BYTE[sizeof(BITMAPFILEHEADER)];
 	memset(m_lpBmpFileHeader, 0, sizeof(BITMAPFILEHEADER));
 	m_lpBmpFileHeader->bfType = 0x4D42;
-	m_lpBmpFileHeader->bfSize = filesize;
-	m_lpBmpFileHeader->bfOffBits = headersize;
+	m_lpBmpFileHeader->bfSize = fileSize;
+	m_lpBmpFileHeader->bfOffBits = headerSize;
 	//计算除位图文件头的空间大小，分配空间并初始化为0
-	dwDibSize = filesize - 14;
+	dwDibSize = fileSize - 14;
+
 	m_lpDib = (LPBYTE)new BYTE[dwDibSize];
 	memset(m_lpDib, 0, dwDibSize);
-
+	//设置位图信息头
 	m_lpBmpInfo = (LPBITMAPINFO)m_lpDib;//设置位图信息指针
 	m_lpBmpInfoHeader = (LPBITMAPINFOHEADER)m_lpDib;//设置位图信息头指针
 	m_lpBmpInfoHeader->biSize = 40;
 	m_lpBmpInfoHeader->biWidth = width;
 	m_lpBmpInfoHeader->biHeight = height;
 	m_lpBmpInfoHeader->biPlanes = 1;
-	m_lpBmpInfoHeader->biBitCount = (unsigned short)depth * 8;
-	m_lpBmpInfoHeader->biSizeImage = width * height * depth;
+	m_lpBmpInfoHeader->biBitCount = depth * 8;
+	m_lpBmpInfoHeader->biSizeImage = dwBMPDataSize;
 	m_lpBmpInfoHeader->biXPelsPerMeter = 3780;
 	m_lpBmpInfoHeader->biYPelsPerMeter = 3780;
 
@@ -308,31 +314,32 @@ BOOL CDib::LoadJPGFromFile(CString lpszPath)
 	DWORD dwRgbQuadLength = CalcRgbQuadLength();//计算颜色表长度
 	//写入bmp_Data
 	m_lpData = m_lpDib + 40 + dwRgbQuadLength;//数据指针
-	point = src_buff + width * depth * (height - 1);    //倒着写数据，bmp格式是倒的，jpg是正的
+	DWORD startPosition = uJPGLineByte * (height - 1);
+	lpDataPoint = lpJPGData + startPosition;    //倒着写数据，bmp格式是倒的，jpg是正的
 	for (int i = 0; i < height; i++)
 	{
-		for (int j = 0; j < width * depth; j += depth)
+		for (int j = 0; j < width ; j++)
 		{
 			if (depth == 1)        //处理灰度图
 			{
-				m_lpData[i * width * depth + j] = point[j];
+				m_lpData[i * uBmpLineByte + j] = lpDataPoint[j];
 			}
 
 			if (depth == 3)        //处理彩色图
 			{
-				m_lpData[i * width * depth + j + 2] = point[j + 0];//R
-				m_lpData[i * width * depth + j + 1] = point[j + 1];//G
-				m_lpData[i * width * depth + j + 0] = point[j + 2];//B
+				m_lpData[i * uBmpLineByte + 3 * j + 2] = lpDataPoint[3 * j + 0];//R
+				m_lpData[i * uBmpLineByte + 3 * j + 1] = lpDataPoint[3 * j + 1];//G
+				m_lpData[i * uBmpLineByte + 3 * j + 0] = lpDataPoint[3 * j + 2];//B
 			}
 		}
-		point -= width * depth;
+		lpDataPoint -= uJPGLineByte;
 	}
 	m_bValid = TRUE;//位图有效
 	
 	//清除临时变量
 	jpeg_finish_decompress(&cinfo);
 	jpeg_destroy_decompress(&cinfo);
-	delete[] src_buff;
+	delete[] lpJPGData;
 	fclose(JPGFile);
 
 	return TRUE;
@@ -775,7 +782,7 @@ void CDib::Empty(BOOL bFlag)
 		m_lpRgbQuad = nullptr;
 		m_lpData = nullptr;
 		delete[] m_lpDib;
-		m_lpDib = nullptr;
+		//m_lpDib = nullptr;
 	}//释放位图指针空间
 	if (m_hPalette != nullptr)
 	{
