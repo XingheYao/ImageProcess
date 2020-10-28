@@ -286,7 +286,6 @@ void CImageProcessView::OnImgtranslation()
 	// TODO: 在此添加命令处理程序代码
 	if (!m_pAllImages[0])
 		return;
-	CDlgTran TranPara;
 	CDib* pTest = new CDib();
 	*pTest = m_Image;
 	geometricTransformation* pImgTransformation = new geometricTransformation();
