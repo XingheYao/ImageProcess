@@ -21,18 +21,17 @@ geometricTransformation::~geometricTransformation()
 */
 bool geometricTransformation::translation(CDib* originalImage, CDib** m_pAllImages,long lXOffset,long lYOffset)
 {
+	if (!originalImage->IsGrade())
+	{
+		originalImage->RgbToGrade();
+	}
 	long height = originalImage->GetHeight();
 	long width = originalImage->GetWidth();
 	long lLineBytes = originalImage->GetLineByte();
 	int i, j;
 	LPBYTE lpOriginalData = (originalImage->GetData());
 	*pProcessImg = *originalImage;
-	bool IsRgb = false;
-	if (!pProcessImg->IsGrade())
-	{
-		pProcessImg->RgbToGrade();
-		IsRgb = true;
-	}
+	
 	LPBYTE lpProcessData = pProcessImg -> GetData();
 	LPBYTE lpTempData = lpProcessData;
 	for (i = 0; i < height; ++i)//ÐÐ
@@ -50,13 +49,9 @@ bool geometricTransformation::translation(CDib* originalImage, CDib** m_pAllImag
 			}
 			else
 			{
-				*(lpTempData) = 255;
+				*lpTempData = 255;
 			}
 		}
-	}
-	if (IsRgb)
-	{
-		pProcessImg->GradeToRgb();
 	}
 	if (m_pAllImages[1])
 		delete m_pAllImages[1];

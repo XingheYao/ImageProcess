@@ -58,8 +58,7 @@ private:
 	
 	CString m_fileName;							        //位图文件名
 	LPBITMAPFILEHEADER m_lpBmpFileHeader;				//位图文件头指针，需动态分配和释放
-	LPBYTE m_lpDib;										//位图指针，包含除位图文件头的所有内容
-														//需动态分配和释放
+	LPBYTE m_lpDib;										//位图指针，包含除位图文件头的所有内容													//需动态分配和释放
 	LPBITMAPINFO m_lpBmpInfo;							//位图信息指针
 	LPBITMAPINFOHEADER m_lpBmpInfoHeader;				//位图信息头指针
 	LPRGBQUAD m_lpRgbQuad;								//位图颜色表指针

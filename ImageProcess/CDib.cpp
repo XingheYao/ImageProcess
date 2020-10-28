@@ -301,6 +301,7 @@ BOOL CDib::LoadJPGFromFile(CString lpszPath)
 		}
 		else
 		{
+			m_hPalette = nullptr;
 			m_bHasRgbQuad = TRUE;//有颜色表
 			MakePalette();//根据颜色表生成调色板
 		}
@@ -597,10 +598,10 @@ BOOL CDib::RgbToGrade()
 		LONG lWidth = GetWidth();
 		UINT uLineByte = GetLineByte();
 		//计算灰度位图数据所需空间
-		UINT uGradeBmpLineByte = (lWidth * 8 / 8 + 3) / 4 * 4;
+		UINT uGradeBmpLineByte = (lWidth * 8 / 8 + 3) / 4 * 4;//((width * (depth * 8)) + 31) / 32 * 4;
 		DWORD dwGradeBmpDataSize = uGradeBmpLineByte * lHeight;
 		//计算灰度位图所需空间
-		DWORD dwGradeBmpSize = sizeof(LPBITMAPINFOHEADER) + sizeof(RGBQUAD) * 256 + dwGradeBmpDataSize;
+		DWORD dwGradeBmpSize = sizeof(BITMAPINFOHEADER) + sizeof(RGBQUAD) * 256 + dwGradeBmpDataSize;
 		//设置灰度位图文件头
 		LPBITMAPFILEHEADER lpGradeBmpFileHeader = (LPBITMAPFILEHEADER) new BYTE[sizeof(BITMAPFILEHEADER)];
 		memset(lpGradeBmpFileHeader, 0, sizeof(BITMAPFILEHEADER));
@@ -655,10 +656,10 @@ BOOL CDib::RgbToGrade()
 		m_lpBmpInfo = (LPBITMAPINFO)(lpGradeBmp);
 		m_lpBmpInfoHeader = (LPBITMAPINFOHEADER)(lpGradeBmp);
 		m_lpRgbQuad = lpGradeBmpRgbQuad;
-		m_lpData = lpGradeBmpData;//设置颜色表标志
-		m_bHasRgbQuad = TRUE;//设置位图有效标志
+		m_lpData = lpGradeBmpData;
+		m_bHasRgbQuad = TRUE;//设置颜色表标志
 		MakePalette();//生成调色板
-		m_bValid = TRUE;
+		m_bValid = TRUE;//设置位图有效标志
 	}
 	return TRUE;
 }
@@ -719,7 +720,7 @@ BOOL CDib::GradeToRgb()
 				lpColorBmpData[i * uColorBmpLineByte + 3 * j + 2] = btValue;
 			}
 		}
-		this->Empty(FALSE);//释放原有位图空间
+		Empty(FALSE);//释放原有位图空间
 		//重新设定源位图指针指向
 		m_lpBmpFileHeader = lpColorBmpFileHeader;
 		m_lpDib = lpColorBmp;
@@ -782,7 +783,7 @@ void CDib::Empty(BOOL bFlag)
 		m_lpRgbQuad = nullptr;
 		m_lpData = nullptr;
 		delete[] m_lpDib;
-		//m_lpDib = nullptr;
+		m_lpDib = nullptr;
 	}//释放位图指针空间
 	if (m_hPalette != nullptr)
 	{
