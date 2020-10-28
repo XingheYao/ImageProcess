@@ -40,7 +40,6 @@ bool geometricTransformation::translation(CDib* originalImage, CDib** m_pAllImag
 		{
 			for (j = 0; j < width; ++j)//列
 			{
-
 				//指向新图像第i行，第j列像素的指针
 				lpTempData = lpProcessData + lLineBytes * (height - 1 - i) + j;
 				//判断是否在原图像范围内
@@ -59,7 +58,6 @@ bool geometricTransformation::translation(CDib* originalImage, CDib** m_pAllImag
 	}
 	else
 	{
-
 		for (i = 0; i < height; ++i)//行
 		{
 			for (j = 0; j < width; ++j)//列
