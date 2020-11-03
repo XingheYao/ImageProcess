@@ -14,7 +14,7 @@
 using namespace std;
 #include <afx.h>
 #include <afxwin.h>
-
+#define PI 3.1415926535898
 extern "C" {
 #include "jpeglib.h"
 }
@@ -40,6 +40,10 @@ public:
 	DWORD GetNumOfColor();								//获取位图颜色数
 	LPRGBQUAD GetRgbQuad();								//获取位图颜色表
 	LPBYTE GetData();									//获取位图数据
+	LPBITMAPFILEHEADER GetBmpFileHeader();              //获取位图文件头指针
+	LPBITMAPINFO GetlpBmpInfo();						//获取位图信息指针
+	LPBYTE GetlpDib();									//获取位图指针
+	LPBITMAPINFOHEADER GetlpBmpInfoHeader();			//获取位图信息头指针
 	BOOL Draw(CDC* pDC, CPoint origin, CSize size);		//显示位图
 	BOOL RgbToGrade();									//24位彩色位图转8位灰度位图
 	BOOL GradeToRgb();									//8位灰度位图转24位彩色位图
@@ -48,10 +52,11 @@ public:
 	BOOL IsValid();										//判断位图是否有效
 	CDib& operator=(const CDib& rhs);                   //“=”运算符重载
 	void Empty(BOOL bFlag = TRUE);						//清理空间
-protected:
 	DWORD CalcRgbQuadLength();							//计算位图颜色表长度
 	BOOL MakePalette();									//根据颜色表生成调色板
-	
+	void rotate(float fAngle);                          //旋转图像
+	LPBYTE createGradeBmp(LONG width, LONG height);     //创建一个空白灰度位图文件
+	LPBYTE createColorBmp(LONG width, LONG height);		//创建一个空白彩色位图文件
 public:
 	CString m_title;                                    //文件显示标题
 private:

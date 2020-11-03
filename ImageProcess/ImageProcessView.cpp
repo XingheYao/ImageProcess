@@ -33,6 +33,7 @@ BEGIN_MESSAGE_MAP(CImageProcessView, CView)
 	ON_COMMAND(ID_FILE_OPEN, &CImageProcessView::OnFileOpen)
 	ON_COMMAND(ID_FILE_SAVE, &CImageProcessView::OnFileSave)
 	ON_COMMAND(ID_ImgTranslation, &CImageProcessView::OnImgtranslation)
+	ON_COMMAND(ID_ImgRotate, &CImageProcessView::OnImgRotate)
 END_MESSAGE_MAP()
 
 // CImageProcessView 构造/析构
@@ -222,7 +223,7 @@ void CImageProcessView::OnFileSave()
 		}
 		CString strFilter;
 		//strFilter ="位图文件|*.bmp|JPEG 图像文件|*.jpg|GIF 图像文件|*.gif|PNG 图像文件|*.png||";   //
-		strFilter = "所有文件|*.*||";   //
+		strFilter = "位图文件|*.bmp||";   //
 
 		CFileDialog dlg(FALSE, NULL, NULL, NULL, strFilter);
 		//CFileDialog dlg(FALSE,NULL,NULL,NULL);
@@ -231,7 +232,7 @@ void CImageProcessView::OnFileSave()
 			return;
 		// 如果用户没有指定文件扩展名，则为其添加一个
 		CString strFileName;
-		//CString strExtension;
+		CString strExtension;
 		strFileName = dlg.m_ofn.lpstrFile;   //  获得文件名
 		//if(dlg.m_ofn.nFileExtension == 0)     //获得文件扩展名
 		//{
@@ -248,11 +249,12 @@ void CImageProcessView::OnFileSave()
 		//	default:
 		//		break;
 		//	}
-		//	strFileName = strFileName + _T(".") + strExtension;
+		strExtension = "bmp";
+		strFileName = strFileName + _T(".") + strExtension;
 		//	//strFileName="C:\\Users\\Lenovo\\Desktop\\QSanguosha-Qingming\\abc.bmp";
 		//}
 		// 图像保存
-		BOOL hResult = m_Image.SaveToFile(strFileName);
+		BOOL hResult = m_pAllImages[i]->SaveToFile(strFileName);
 		if (!hResult)
 		{
 			MessageBox(_T("保存图像文件失败！"));
@@ -275,7 +277,7 @@ void CImageProcessView::OnShowOrigin()
 	/*LPBYTE TempData = (pTest->GetData());
 	for (int i = 0; i < 5 * pTest->GetLineByte(); ++i)
 		TempData[i] = 0;*/
-	pTest->RgbToGrade();
+	pTest->GradeToRgb();
 	pTest->m_title = "测试图像";
 	m_pAllImages[1] = pTest;
 	Invalidate();
@@ -286,9 +288,20 @@ void CImageProcessView::OnImgtranslation()
 	// TODO: 在此添加命令处理程序代码
 	if (!m_pAllImages[0])
 		return;
-	CDib* pTest = new CDib();
-	*pTest = m_Image;
+
 	geometricTransformation* pImgTransformation = new geometricTransformation();
-	pImgTransformation->translation(pTest, m_pAllImages, 50, 50);
+	pImgTransformation->translation(&m_Image, m_pAllImages, 50, 50);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnImgRotate()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0])
+		return;
+
+	geometricTransformation* pImgTransformation = new geometricTransformation();
+	pImgTransformation->rotate(&m_Image, m_pAllImages, 80);
 	Invalidate();
 }

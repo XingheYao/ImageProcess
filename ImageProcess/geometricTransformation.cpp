@@ -14,11 +14,16 @@ geometricTransformation::~geometricTransformation()
 		pProcessImg = nullptr;
 	}
 }
-/*  函数参数
-*   CDib originalImage  原始图像
-*	CDib* m_pAllImages  所有图像指针
-*
-*/
+// =============================================
+//	函数功能：          图像平移
+//	输入参数：
+//  CDib originalImage  原始图像
+//	CDib* m_pAllImages  所有图像指针
+//  long lXOffset       横坐标平移量
+//  long lYOffset       纵坐标平移量
+//	返回值              TRUE or FALSE（是否平移成功）
+//
+//=============================================
 bool geometricTransformation::translation(CDib* originalImage, CDib** m_pAllImages,long lXOffset,long lYOffset)
 {
 	/*if (!originalImage->IsGrade())
@@ -32,8 +37,8 @@ bool geometricTransformation::translation(CDib* originalImage, CDib** m_pAllImag
 	LPBYTE lpOriginalData = (originalImage->GetData());
 	*pProcessImg = *originalImage;
 	
-	LPBYTE lpProcessData = pProcessImg -> GetData();
-	LPBYTE lpTempData = lpProcessData;
+	LPBYTE lpProcessData;
+	LPBYTE lpTempData;
 	if (originalImage->IsGrade())
 	{
 		for (i = 0; i < height; ++i)//行
@@ -41,17 +46,18 @@ bool geometricTransformation::translation(CDib* originalImage, CDib** m_pAllImag
 			for (j = 0; j < width; ++j)//列
 			{
 				//指向新图像第i行，第j列像素的指针
-				lpTempData = lpProcessData + lLineBytes * (height - 1 - i) + j;
+				lpProcessData = pProcessImg->GetData() + lLineBytes * (height - 1 - i) + j;
 				//判断是否在原图像范围内
 				if ((j - lYOffset >= 0) && (j - lYOffset < width) &&
 					(i - lXOffset >= 0) && (i - lXOffset < height))
 				{
-					*lpTempData = *(lpOriginalData + lLineBytes *
-						(height - 1 - (i - lXOffset)) + (j - lYOffset));
+					lpTempData = lpOriginalData + lLineBytes *
+						(height - 1 - (i - lXOffset)) + (j - lYOffset);
+					*lpProcessData = *lpTempData;
 				}
 				else
 				{
-					*lpTempData = 255;
+					*lpProcessData = 255;
 				}
 			}
 		}
@@ -63,23 +69,21 @@ bool geometricTransformation::translation(CDib* originalImage, CDib** m_pAllImag
 			for (j = 0; j < width; ++j)//列
 			{
 				//指向新图像第i行，第j列像素的指针
-				lpTempData = lpProcessData + lLineBytes * (height - 1 - i) + 3 * j;
+				lpProcessData = pProcessImg->GetData() + lLineBytes * (height - 1 - i) + 3 * j;
 				//判断是否在原图像范围内
 				if ((j - lYOffset >= 0) && (j - lYOffset < width) &&
 					(i - lXOffset >= 0) && (i - lXOffset < height))
 				{
-					*lpTempData = *(lpOriginalData + lLineBytes *
-						(height - 1 - (i - lXOffset)) + 3 * (j - lYOffset));
-					*(lpTempData + 1) = *(lpOriginalData + lLineBytes *
-						(height - 1 - (i - lXOffset)) + 3 * (j - lYOffset) + 1);
-					*(lpTempData + 2) = *(lpOriginalData + lLineBytes *
-						(height - 1 - (i - lXOffset)) + 3 * (j - lYOffset) + 2);
+					lpTempData = lpOriginalData + lLineBytes *(height - 1 - (i - lXOffset)) + 3 * (j - lYOffset);
+					*lpProcessData = *lpTempData;
+					*(lpProcessData + 1) = *(lpTempData + 1);
+					*(lpProcessData + 2) = *(lpTempData + 2);
 				}
 				else
 				{
-					*lpTempData = 255;
-					*(lpTempData + 1) = 255;
-					*(lpTempData + 2) = 255;
+					*lpProcessData = 255;
+					*(lpProcessData + 1) = 255;
+					*(lpProcessData + 2) = 255;
 				}
 			}
 		}
@@ -90,51 +94,22 @@ bool geometricTransformation::translation(CDib* originalImage, CDib** m_pAllImag
 	m_pAllImages[1] = pProcessImg;
 	return true;
 }
-
-/*bool geometricTransformation::rotate(CDib* originalImage, CDib** m_pAllImages, float fAngle)
+// =============================================
+//	函数功能：          图像旋转
+//	输入参数：
+//  CDib originalImage  原始图像
+//	CDib* m_pAllImages  所有图像指针
+//  float fAngle        旋转角度
+//	返回值              TRUE or FALSE（是否平移成功）
+//
+//=============================================
+bool geometricTransformation::rotate(CDib* originalImage, CDib** m_pAllImages, float fAngle)
 {
-	long height = originalImage->GetHeight();
-	long width = originalImage->GetWidth();
-	long lLineBytes = originalImage->GetLineByte();
-	int i, j;
-	LPBYTE lpOriginalData = (originalImage->GetData());
 	*pProcessImg = *originalImage;
-	float fRotateAngle = (float)(fAngle / 180 * PI);
-	
-	bool IsRgb = false;
-	if (pProcessImg->GetBitCount() == 24)
-	{
-		pProcessImg->RgbToGrade();
-		IsRgb = true;
-	}
-	LPBYTE lpProcessData = pProcessImg->GetData();
-	LPBYTE lpTempData = lpProcessData;
-	for (i = 0; i < height; ++i)//行
-	{
-		for (j = 0; j < width; ++j)//列
-		{
-			//指向新图像第i行，第j列像素的指针
-			lpTempData = lpProcessData + lLineBytes * (height - 1 - i) + j;
-			//判断是否在原图像范围内
-			if ((j - lYOffset >= 0) && (j - lYOffset < width) &&
-				(i - lXOffset >= 0) && (i - lXOffset < height))
-			{
-				*lpTempData = *(lpOriginalData + lLineBytes *
-					(height - 1 - (i - lXOffset)) + (j - lYOffset));
-			}
-			else
-			{
-				*(lpTempData) = 255;
-			}
-		}
-	}
-	if (IsRgb)
-	{
-		pProcessImg->GradeToRgb();
-	}
+	pProcessImg->rotate(fAngle);
 	if (m_pAllImages[1])
 		delete m_pAllImages[1];
 	pProcessImg->m_title = "图像旋转";
 	m_pAllImages[1] = pProcessImg;
 	return true;
-}*/
+}

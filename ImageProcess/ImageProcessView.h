@@ -53,6 +53,7 @@ public:
 	afx_msg void OnFileOpen();
 	afx_msg void OnFileSave();
 	afx_msg void OnImgtranslation();
+	afx_msg void OnImgRotate();
 };
 
 #ifndef _DEBUG  // ImageProcessView.cpp 中的调试版本

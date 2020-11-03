@@ -177,6 +177,8 @@ protected:
 // 实现
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnImageRotate();
 };
 
 CAboutDlg::CAboutDlg() noexcept : CDialogEx(IDD_ABOUTBOX)
@@ -221,6 +223,5 @@ void CImageProcessApp::SaveCustomState()
 }
 
 // CImageProcessApp 消息处理程序
-
 
 
