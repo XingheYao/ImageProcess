@@ -34,6 +34,9 @@ BEGIN_MESSAGE_MAP(CImageProcessView, CView)
 	ON_COMMAND(ID_FILE_SAVE, &CImageProcessView::OnFileSave)
 	ON_COMMAND(ID_ImgTranslation, &CImageProcessView::OnImgtranslation)
 	ON_COMMAND(ID_ImgRotate, &CImageProcessView::OnImgRotate)
+	ON_COMMAND(ID_32787, &CImageProcessView::OnHorizontalMirror)
+	ON_COMMAND(ID_32788, &CImageProcessView::OnVerticalMirror)
+	ON_COMMAND(ID_32789, &CImageProcessView::OnImageTransposition)
 END_MESSAGE_MAP()
 
 // CImageProcessView 构造/析构
@@ -300,8 +303,40 @@ void CImageProcessView::OnImgRotate()
 	// TODO: 在此添加命令处理程序代码
 	if (!m_pAllImages[0])
 		return;
-
 	geometricTransformation* pImgTransformation = new geometricTransformation();
-	pImgTransformation->rotate(&m_Image, m_pAllImages, 80);
+	pImgTransformation->rotate(&m_Image, m_pAllImages, 90);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnHorizontalMirror()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0])
+		return;
+	geometricTransformation* pImgTransformation = new geometricTransformation();
+	pImgTransformation->mirror(&m_Image, m_pAllImages, true);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnVerticalMirror()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0])
+		return;
+	geometricTransformation* pImgTransformation = new geometricTransformation();
+	pImgTransformation->mirror(&m_Image, m_pAllImages, false);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnImageTransposition()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0])
+		return;
+	geometricTransformation* pImgTransformation = new geometricTransformation();
+	pImgTransformation->transposition(&m_Image, m_pAllImages);
 	Invalidate();
 }

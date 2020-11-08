@@ -10,6 +10,9 @@ public:
 	~geometricTransformation();
 	bool translation(CDib* originalImage, CDib** m_pAllImages, long lXOffset, long lYOffset);
 	bool rotate(CDib* originalImage, CDib** m_pAllImages, float fRotateAngle);
+	bool mirror(CDib* originalImage, CDib** m_pAllImages, bool isHorizontal);
+	bool transposition(CDib* originalImage, CDib** m_pAllImages);
+
 private:
 	CDib* pProcessImg;
 

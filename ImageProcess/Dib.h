@@ -55,8 +55,8 @@ public:
 	DWORD CalcRgbQuadLength();							//计算位图颜色表长度
 	BOOL MakePalette();									//根据颜色表生成调色板
 	void rotate(float fAngle);                          //旋转图像
-	LPBYTE createGradeBmp(LONG width, LONG height);     //创建一个空白灰度位图文件
-	LPBYTE createColorBmp(LONG width, LONG height);		//创建一个空白彩色位图文件
+	LPBYTE createGradeBmp(LONG width, LONG height, bool IsBackup = TRUE);     //创建一个空白灰度位图文件
+	LPBYTE createColorBmp(LONG width, LONG height, bool IsBackup = TRUE);		//创建一个空白彩色位图文件
 public:
 	CString m_title;                                    //文件显示标题
 private:

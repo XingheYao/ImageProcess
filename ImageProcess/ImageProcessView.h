@@ -54,6 +54,9 @@ public:
 	afx_msg void OnFileSave();
 	afx_msg void OnImgtranslation();
 	afx_msg void OnImgRotate();
+	afx_msg void OnHorizontalMirror();
+	afx_msg void OnVerticalMirror();
+	afx_msg void OnImageTransposition();
 };
 
 #ifndef _DEBUG  // ImageProcessView.cpp 中的调试版本

@@ -223,7 +223,7 @@ BOOL CDib::LoadJPGFromFile(CString lpszPath)
 	uJPGLineByte = width * depth;
 	lpJPGData = new BYTE[dwJPGDataSize];
 	memset(lpJPGData, 0, sizeof(BYTE) * dwJPGDataSize);
-
+	double A = 1.00;
 	buffer = (*cinfo.mem->alloc_sarray)
 	((j_common_ptr)&cinfo, JPOOL_IMAGE, uJPGLineByte, 1);
 
@@ -851,14 +851,19 @@ void CDib::rotate(float fAngle)
 //=============================================
 //函数功能：新建空白灰度位图
 //输入参数：位图文件头指针，位图指针，图像高度，图像宽度
-//返回值：原图像数据数据指针
+//返回值：原图像数据数据指针（记得释放内存空间）
 //==============================================
-LPBYTE CDib::createGradeBmp(LONG width, LONG height)
+LPBYTE CDib::createGradeBmp(LONG width, LONG height, bool IsBackup)
 {
 	//将原图像数据备份
 	LONG lInitSize = GetHeight() * GetLineByte();
-	LPBYTE initData = (LPBYTE) new BYTE[lInitSize];
-	memcpy(initData, m_lpData, lInitSize);
+	LPBYTE initData = nullptr;
+	if (TRUE == IsBackup)
+	{
+		initData = (LPBYTE) new BYTE[lInitSize];
+		memcpy(initData, m_lpData, lInitSize);
+	}
+	
 	//获取源位图信息
 	LONG lHeight = height;
 	LONG lWidth = width;
@@ -918,16 +923,20 @@ LPBYTE CDib::createGradeBmp(LONG width, LONG height)
 	return initData;
 }
 //=============================================
-//函数功能：新建空白彩色位图（需要将原图像数据备份）
+//函数功能：新建空白彩色位图（不需要将原图像数据备份）
 //输入参数：位图文件头指针，位图指针，图像高度，图像宽度
-//返回值：原图像数据指针
+//返回值：原图像数据指针（记得释放内存空间）
 //==============================================
-LPBYTE CDib::createColorBmp( LONG width, LONG height)
+LPBYTE CDib::createColorBmp( LONG width, LONG height, bool IsBackup)
 {
 	//将原图像数据备份
 	LONG lInitSize= GetHeight()* GetLineByte();
-	LPBYTE initData= (LPBYTE) new BYTE[lInitSize];
-	memcpy(initData, m_lpData, lInitSize);
+	LPBYTE initData = nullptr;
+	if (TRUE == IsBackup)
+	{
+		initData = (LPBYTE) new BYTE[lInitSize];
+		memcpy(initData, m_lpData, lInitSize);
+	}
 	//获取源位图信息
 	LONG lHeight = height;
 	LONG lWidth = width;
