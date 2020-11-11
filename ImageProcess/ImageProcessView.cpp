@@ -37,6 +37,7 @@ BEGIN_MESSAGE_MAP(CImageProcessView, CView)
 	ON_COMMAND(ID_32787, &CImageProcessView::OnHorizontalMirror)
 	ON_COMMAND(ID_32788, &CImageProcessView::OnVerticalMirror)
 	ON_COMMAND(ID_32789, &CImageProcessView::OnImageTransposition)
+	ON_COMMAND(ID_InvariantMoment, &CImageProcessView::OnInvariantmoment)
 END_MESSAGE_MAP()
 
 // CImageProcessView 构造/析构
@@ -280,7 +281,7 @@ void CImageProcessView::OnShowOrigin()
 	/*LPBYTE TempData = (pTest->GetData());
 	for (int i = 0; i < 5 * pTest->GetLineByte(); ++i)
 		TempData[i] = 0;*/
-	pTest->GradeToRgb();
+	pTest->RgbToGrade();
 	pTest->m_title = "测试图像";
 	m_pAllImages[1] = pTest;
 	Invalidate();
@@ -289,8 +290,11 @@ void CImageProcessView::OnShowOrigin()
 void CImageProcessView::OnImgtranslation()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (!m_pAllImages[0])
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
 		return;
+	}
 
 	geometricTransformation* pImgTransformation = new geometricTransformation();
 	pImgTransformation->translation(&m_Image, m_pAllImages, 50, 50);
@@ -301,8 +305,11 @@ void CImageProcessView::OnImgtranslation()
 void CImageProcessView::OnImgRotate()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (!m_pAllImages[0])
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
 		return;
+	}
 	geometricTransformation* pImgTransformation = new geometricTransformation();
 	pImgTransformation->rotate(&m_Image, m_pAllImages, 90);
 	Invalidate();
@@ -312,8 +319,11 @@ void CImageProcessView::OnImgRotate()
 void CImageProcessView::OnHorizontalMirror()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (!m_pAllImages[0])
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
 		return;
+	}
 	geometricTransformation* pImgTransformation = new geometricTransformation();
 	pImgTransformation->mirror(&m_Image, m_pAllImages, true);
 	Invalidate();
@@ -323,8 +333,11 @@ void CImageProcessView::OnHorizontalMirror()
 void CImageProcessView::OnVerticalMirror()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (!m_pAllImages[0])
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
 		return;
+	}
 	geometricTransformation* pImgTransformation = new geometricTransformation();
 	pImgTransformation->mirror(&m_Image, m_pAllImages, false);
 	Invalidate();
@@ -334,9 +347,51 @@ void CImageProcessView::OnVerticalMirror()
 void CImageProcessView::OnImageTransposition()
 {
 	// TODO: 在此添加命令处理程序代码
-	if (!m_pAllImages[0])
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
 		return;
+	}
 	geometricTransformation* pImgTransformation = new geometricTransformation();
 	pImgTransformation->transposition(&m_Image, m_pAllImages);
 	Invalidate();
+}
+
+
+
+void CImageProcessView::OnInvariantmoment()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+
+	CString filter;
+	filter = "所有文件(*.bmp,*.jpg,*.gif,*tiff)|*.bmp;*.jpg;*.gif;*.tiff| BMP(*.bmp)|*.bmp| JPG(*.jpg)|*.jpg| GIF(*.gif)|*.gif| TIFF(*.tiff)|*.tiff||";
+	CFileDialog dlg(TRUE, NULL, NULL, OFN_HIDEREADONLY, filter, NULL);
+
+	//按下确定按钮 dlg.DoModal() 函数显示对话框
+	if (IDOK == dlg.DoModal())
+	{
+		m_pAllImages[1] = (CDib*)new CDib();
+		m_EntName = dlg.GetFileExt();      //获取文件扩展名
+		m_EntName.MakeLower();             //将文件扩展名转换为一个小写字符
+		if (m_EntName == "bmp")
+			m_pAllImages[1]->LoadFromFile(dlg.GetPathName());//获得图片的地址，并且加载图片
+		else if (m_EntName == "jpg")
+			m_pAllImages[1]->LoadJPGFromFile(dlg.GetPathName());
+		else
+		{
+			return;
+		}
+		//m_OriginName = dlg.GetPathName();     //获取文件路径名   
+
+		
+	}
+	PatternMatching* pPatternMatching = new PatternMatching();
+	pPatternMatching->calcMoment(m_pAllImages[0], m_pAllImages[1]);
+	Invalidate();
+
 }

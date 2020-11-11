@@ -6,6 +6,7 @@
 #include "Dib.h"
 #define MAXNUM 10
 #include "geometricTransformation.h"
+#include "PatternMatching.h"
 class CImageProcessView : public CView
 {
 protected: // 仅从序列化创建
@@ -57,6 +58,8 @@ public:
 	afx_msg void OnHorizontalMirror();
 	afx_msg void OnVerticalMirror();
 	afx_msg void OnImageTransposition();
+	afx_msg void OnInvariantMoment();
+	afx_msg void OnInvariantmoment();
 };
 
 #ifndef _DEBUG  // ImageProcessView.cpp 中的调试版本

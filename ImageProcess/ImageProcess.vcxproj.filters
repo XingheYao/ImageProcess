@@ -66,6 +66,9 @@
     <ClInclude Include="geometricTransformation.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="PatternMatching.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImageProcess.cpp">
@@ -108,6 +111,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="geometricTransformation.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PatternMatching.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
