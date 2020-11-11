@@ -38,6 +38,8 @@ BEGIN_MESSAGE_MAP(CImageProcessView, CView)
 	ON_COMMAND(ID_32788, &CImageProcessView::OnVerticalMirror)
 	ON_COMMAND(ID_32789, &CImageProcessView::OnImageTransposition)
 	ON_COMMAND(ID_InvariantMoment, &CImageProcessView::OnInvariantmoment)
+	ON_COMMAND(ID_NegativeEffect, &CImageProcessView::OnNegativeeffect)
+	ON_COMMAND(ID_EmBoss, &CImageProcessView::OnEmboss)
 END_MESSAGE_MAP()
 
 // CImageProcessView 构造/析构
@@ -268,7 +270,7 @@ void CImageProcessView::OnFileSave()
 
 void CImageProcessView::OnShowOrigin()
 {
-
+	
 	// TODO: 在此添加命令处理程序代码
 	if (!m_pAllImages[0]) {
 		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
@@ -394,4 +396,32 @@ void CImageProcessView::OnInvariantmoment()
 	pPatternMatching->calcMoment(m_pAllImages[0], m_pAllImages[1]);
 	Invalidate();
 
+}
+
+
+void CImageProcessView::OnNegativeeffect()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	ImageEffects* pImageEffects = new ImageEffects();
+	pImageEffects->NegativeEffect(m_pAllImages[0], m_pAllImages);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnEmboss()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	ImageEffects* pImageEffects = new ImageEffects();
+	pImageEffects->EmBoss(m_pAllImages[0], m_pAllImages);
+	Invalidate();
 }

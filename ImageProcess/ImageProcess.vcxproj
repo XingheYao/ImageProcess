@@ -205,6 +205,7 @@
     <ClInclude Include="FileView.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="geometricTransformation.h" />
+    <ClInclude Include="ImageEffects.h" />
     <ClInclude Include="ImageProcess.h" />
     <ClInclude Include="ImageProcessDoc.h" />
     <ClInclude Include="ImageProcessView.h" />
@@ -224,6 +225,7 @@
     <ClCompile Include="ClassView.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="geometricTransformation.cpp" />
+    <ClCompile Include="ImageEffects.cpp" />
     <ClCompile Include="ImageProcess.cpp" />
     <ClCompile Include="ImageProcessDoc.cpp" />
     <ClCompile Include="ImageProcessView.cpp" />

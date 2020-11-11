@@ -515,6 +515,17 @@ LPBITMAPFILEHEADER CDib::GetBmpFileHeader()
 	return m_lpBmpFileHeader;
 }
 //=============================================
+//函数功能：获取m_lpBmpFileHeader
+//输入参数：无
+//返回值：返回颜色深度 灰度为1，rgb为3
+//==============================================
+LONG CDib::GetDepth()
+{
+	if (IsGrade())
+		return 1;
+	return 3;
+}
+//=============================================
 //函数功能：获取m_lpDib
 //输入参数：无
 //返回值：LPBYTE表示m_lpDib
