@@ -179,6 +179,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnImageRotate();
+	afx_msg void OnWeightcolortobw();
 };
 
 CAboutDlg::CAboutDlg() noexcept : CDialogEx(IDD_ABOUTBOX)
@@ -191,6 +192,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+	
 END_MESSAGE_MAP()
 
 // 用于运行对话框的应用程序命令
@@ -223,5 +225,6 @@ void CImageProcessApp::SaveCustomState()
 }
 
 // CImageProcessApp 消息处理程序
+
 
 

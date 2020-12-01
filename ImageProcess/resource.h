@@ -109,13 +109,51 @@
 #define ID_NegativeEffect               32793
 #define ID_32794                        32794
 #define ID_EmBoss                       32795
+#define ID_32796                        32796
+#define ID_32797                        32797
+#define ID_AVClolorToBW                 32798
+#define ID_32799                        32799
+#define ID_MaxColorToBW                 32800
+#define ID_32801                        32801
+#define ID_WeightColorToBW              32802
+#define ID_32803                        32803
+#define ID_32804                        32804
+#define ID_LevelFog                     32805
+#define ID_32806                        32806
+#define ID_verticalFog                  32807
+#define ID_32808                        32808
+#define ID_ComFog                       32809
+#define ID_32810                        32810
+#define ID_Sketch                       32811
+#define ID_32812                        32812
+#define ID_Roberts                      32813
+#define ID_32814                        32814
+#define ID_Sobel                        32815
+#define ID_32816                        32816
+#define ID_Prewitt                      32817
+#define ID_32818                        32818
+#define ID_Krisch                       32819
+#define ID_32820                        32820
+#define ID_Laplacian                    32821
+#define ID_32822                        32822
+#define ID_32823                        32823
+#define ID_GaussLaplacian               32824
+#define ID_32825                        32825
+#define ID_32826                        32826
+#define ID_LinearEnhancement            32827
+#define ID_32828                        32828
+#define ID_PiecewiseLinearEnhancement   32829
+#define ID_32830                        32830
+#define ID_NonLinearEnhancement         32831
+#define ID_32832                        32832
+#define ID_HistogramEnhancement         32833
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        310
-#define _APS_NEXT_COMMAND_VALUE         32796
+#define _APS_NEXT_COMMAND_VALUE         32834
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

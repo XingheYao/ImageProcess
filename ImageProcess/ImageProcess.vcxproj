@@ -202,10 +202,12 @@
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="ClassView.h" />
     <ClInclude Include="Dib.h" />
+    <ClInclude Include="EdgeDetection.h" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="geometricTransformation.h" />
     <ClInclude Include="ImageEffects.h" />
+    <ClInclude Include="ImageEnhancement.h" />
     <ClInclude Include="ImageProcess.h" />
     <ClInclude Include="ImageProcessDoc.h" />
     <ClInclude Include="ImageProcessView.h" />
@@ -223,9 +225,11 @@
     <ClCompile Include="CDib.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="ClassView.cpp" />
+    <ClCompile Include="EdgeDetection.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="geometricTransformation.cpp" />
     <ClCompile Include="ImageEffects.cpp" />
+    <ClCompile Include="ImageEnhancement.cpp" />
     <ClCompile Include="ImageProcess.cpp" />
     <ClCompile Include="ImageProcessDoc.cpp" />
     <ClCompile Include="ImageProcessView.cpp" />

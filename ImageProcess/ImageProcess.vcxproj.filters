@@ -72,6 +72,12 @@
     <ClInclude Include="ImageEffects.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="EdgeDetection.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageEnhancement.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImageProcess.cpp">
@@ -120,6 +126,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ImageEffects.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="EdgeDetection.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageEnhancement.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

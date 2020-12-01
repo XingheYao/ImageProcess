@@ -40,6 +40,23 @@ BEGIN_MESSAGE_MAP(CImageProcessView, CView)
 	ON_COMMAND(ID_InvariantMoment, &CImageProcessView::OnInvariantmoment)
 	ON_COMMAND(ID_NegativeEffect, &CImageProcessView::OnNegativeeffect)
 	ON_COMMAND(ID_EmBoss, &CImageProcessView::OnEmboss)
+	ON_COMMAND(ID_AVClolorToBW, &CImageProcessView::OnAvclolortobw)
+	ON_COMMAND(ID_MaxColorToBW, &CImageProcessView::OnMaxcolortobw)
+	ON_COMMAND(ID_WeightColorToBW, &CImageProcessView::OnWeightcolortobw)
+	ON_COMMAND(ID_LevelFog, &CImageProcessView::OnLevelfog)
+	ON_COMMAND(ID_verticalFog, &CImageProcessView::OnVerticalfog)
+	ON_COMMAND(ID_ComFog, &CImageProcessView::OnComfog)
+	ON_COMMAND(ID_Sketch, &CImageProcessView::OnSketch)
+	ON_COMMAND(ID_Roberts, &CImageProcessView::OnRoberts)
+	ON_COMMAND(ID_Sobel, &CImageProcessView::OnSobel)
+	ON_COMMAND(ID_Prewitt, &CImageProcessView::OnPrewitt)
+	ON_COMMAND(ID_Krisch, &CImageProcessView::OnKrisch)
+	ON_COMMAND(ID_Laplacian, &CImageProcessView::OnLaplacian)
+	ON_COMMAND(ID_GaussLaplacian, &CImageProcessView::OnGausslaplacian)
+	ON_COMMAND(ID_LinearEnhancement, &CImageProcessView::OnLinearEnhancement)
+	ON_COMMAND(ID_PiecewiseLinearEnhancement, &CImageProcessView::OnPiecewiselinearenhancement)
+	ON_COMMAND(ID_NonLinearEnhancement, &CImageProcessView::OnNonlinearenhancement)
+	ON_COMMAND(ID_HistogramEnhancement, &CImageProcessView::OnHistogramenhancement)
 END_MESSAGE_MAP()
 
 // CImageProcessView 构造/析构
@@ -284,6 +301,13 @@ void CImageProcessView::OnShowOrigin()
 	for (int i = 0; i < 5 * pTest->GetLineByte(); ++i)
 		TempData[i] = 0;*/
 	pTest->RgbToGrade();
+	LPBYTE lpData = pTest->GetData();
+	for (int i = 100; i < 120; ++i)
+		for(int j = 100; j< 120 ; ++j)
+		{
+			 *(lpData + pTest->GetLineByte() * (i -100) + j+100 ) = 255;
+
+		}
 	pTest->m_title = "测试图像";
 	m_pAllImages[1] = pTest;
 	Invalidate();
@@ -423,5 +447,265 @@ void CImageProcessView::OnEmboss()
 	}
 	ImageEffects* pImageEffects = new ImageEffects();
 	pImageEffects->EmBoss(m_pAllImages[0], m_pAllImages);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnAvclolortobw()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	ImageEffects* pImageEffects = new ImageEffects();
+	pImageEffects->ColorToBW(m_pAllImages[0], m_pAllImages, 1);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnMaxcolortobw()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	ImageEffects* pImageEffects = new ImageEffects();
+	pImageEffects->ColorToBW(m_pAllImages[0], m_pAllImages, 2);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnWeightcolortobw()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	ImageEffects* pImageEffects = new ImageEffects();
+	pImageEffects->ColorToBW(m_pAllImages[0], m_pAllImages, 3);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnLevelfog()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	ImageEffects* pImageEffects = new ImageEffects();
+	pImageEffects->ComFog(m_pAllImages[0], m_pAllImages, 1, 30);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnVerticalfog()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	ImageEffects* pImageEffects = new ImageEffects();
+	pImageEffects->ComFog(m_pAllImages[0], m_pAllImages, 2, 5);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnComfog()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	ImageEffects* pImageEffects = new ImageEffects();
+	pImageEffects->ComFog(m_pAllImages[0], m_pAllImages, 3, 5);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnSketch()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	CDib* pTest = new CDib(*m_pAllImages[0]);
+	//pTest->RgbToGrade();
+	ImageEffects* pImageEffects = new ImageEffects();
+	pImageEffects->sketch(pTest, m_pAllImages);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnRoberts()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	CDib* pTest = new CDib(*m_pAllImages[0]);
+	pTest->RgbToGrade();
+	EdgeDetection* pImageEffects = new EdgeDetection();
+	pImageEffects->Roberts(pTest, m_pAllImages);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnSobel()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	CDib* pTest = new CDib(*m_pAllImages[0]);
+	pTest->RgbToGrade();
+	EdgeDetection* pImageEffects = new EdgeDetection();
+	pImageEffects->Sobel(pTest, m_pAllImages);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnPrewitt()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	CDib* pTest = new CDib(*m_pAllImages[0]);
+	pTest->RgbToGrade();
+	EdgeDetection* pImageEffects = new EdgeDetection();
+	pImageEffects->Prewitt(pTest, m_pAllImages);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnKrisch()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	CDib* pTest = new CDib(*m_pAllImages[0]);
+	pTest->RgbToGrade();
+	EdgeDetection* pImageEffects = new EdgeDetection();
+	pImageEffects->Krisch(pTest, m_pAllImages);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnLaplacian()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	CDib* pTest = new CDib(*m_pAllImages[0]);
+	pTest->RgbToGrade();
+	EdgeDetection* pImageEffects = new EdgeDetection();
+	pImageEffects->Laplacian(pTest, m_pAllImages);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnGausslaplacian()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	CDib* pTest = new CDib(*m_pAllImages[0]);
+	pTest->RgbToGrade();
+	EdgeDetection* pImageEffects = new EdgeDetection();
+	pImageEffects->GaussLaplacian(pTest, m_pAllImages);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnLinearEnhancement()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	CDib* pTest = new CDib(*m_pAllImages[0]);
+	//pTest->RgbToGrade();
+	ImageEnhancement* pImageEnhancement = new ImageEnhancement();
+	pImageEnhancement->LinearEnhancement(pTest, m_pAllImages);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnPiecewiselinearenhancement()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	CDib* pTest = new CDib(*m_pAllImages[0]);
+	//pTest->RgbToGrade();
+	ImageEnhancement* pImageEnhancement = new ImageEnhancement();
+	pImageEnhancement->PiecewiseLinearEnhancement(pTest, m_pAllImages);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnNonlinearenhancement()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	CDib* pTest = new CDib(*m_pAllImages[0]);
+	//pTest->RgbToGrade();
+	ImageEnhancement* pImageEnhancement = new ImageEnhancement();
+	pImageEnhancement->NonLinearEnhancement(pTest, m_pAllImages);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnHistogramenhancement()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	CDib* pTest = new CDib(*m_pAllImages[0]);
+	//pTest->RgbToGrade();
+	ImageEnhancement* pImageEnhancement = new ImageEnhancement();
+	pImageEnhancement->HistogramEnhancement(pTest, m_pAllImages);
 	Invalidate();
 }

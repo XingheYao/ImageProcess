@@ -8,6 +8,8 @@
 #include "geometricTransformation.h"
 #include "PatternMatching.h"
 #include "ImageEffects.h"
+#include "EdgeDetection.h"
+#include "ImageEnhancement.h"
 class CImageProcessView : public CView
 {
 protected: // 仅从序列化创建
@@ -63,6 +65,23 @@ public:
 	afx_msg void OnInvariantmoment();
 	afx_msg void OnNegativeeffect();
 	afx_msg void OnEmboss();
+	afx_msg void OnAvclolortobw();
+	afx_msg void OnMaxcolortobw();
+	afx_msg void OnWeightcolortobw();
+	afx_msg void OnLevelfog();
+	afx_msg void OnVerticalfog();
+	afx_msg void OnComfog();
+	afx_msg void OnSketch();
+	afx_msg void OnRoberts();
+	afx_msg void OnSobel();
+	afx_msg void OnPrewitt();
+	afx_msg void OnKrisch();
+	afx_msg void OnLaplacian();
+	afx_msg void OnGausslaplacian();
+	afx_msg void OnLinearEnhancement();
+	afx_msg void OnPiecewiselinearenhancement();
+	afx_msg void OnNonlinearenhancement();
+	afx_msg void OnHistogramenhancement();
 };
 
 #ifndef _DEBUG  // ImageProcessView.cpp 中的调试版本
