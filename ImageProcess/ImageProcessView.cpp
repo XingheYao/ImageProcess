@@ -57,6 +57,8 @@ BEGIN_MESSAGE_MAP(CImageProcessView, CView)
 	ON_COMMAND(ID_PiecewiseLinearEnhancement, &CImageProcessView::OnPiecewiselinearenhancement)
 	ON_COMMAND(ID_NonLinearEnhancement, &CImageProcessView::OnNonlinearenhancement)
 	ON_COMMAND(ID_HistogramEnhancement, &CImageProcessView::OnHistogramenhancement)
+	ON_COMMAND(ID_MeanSmoothing, &CImageProcessView::OnMeansmoothing)
+	ON_COMMAND(ID_WeightedMeanSmoothing, &CImageProcessView::OnWeightedmeansmoothing)
 END_MESSAGE_MAP()
 
 // CImageProcessView 构造/析构
@@ -707,5 +709,37 @@ void CImageProcessView::OnHistogramenhancement()
 	//pTest->RgbToGrade();
 	ImageEnhancement* pImageEnhancement = new ImageEnhancement();
 	pImageEnhancement->HistogramEnhancement(pTest, m_pAllImages);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnMeansmoothing()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	CDib* pTest = new CDib(*m_pAllImages[0]);
+	//pTest->RgbToGrade();
+	ImageSmoothing* pImageSmoothing = new ImageSmoothing();
+	pImageSmoothing->MeanSmoothing(pTest, m_pAllImages);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnWeightedmeansmoothing()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	CDib* pTest = new CDib(*m_pAllImages[0]);
+	//pTest->RgbToGrade();
+	ImageSmoothing* pImageSmoothing = new ImageSmoothing();
+	pImageSmoothing->WeightedMeanSmoothing(pTest, m_pAllImages);
 	Invalidate();
 }

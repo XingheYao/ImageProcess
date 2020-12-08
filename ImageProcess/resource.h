@@ -147,13 +147,17 @@
 #define ID_NonLinearEnhancement         32831
 #define ID_32832                        32832
 #define ID_HistogramEnhancement         32833
+#define ID_32834                        32834
+#define ID_MeanSmoothing                32835
+#define ID_32836                        32836
+#define ID_WeightedMeanSmoothing        32837
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        310
-#define _APS_NEXT_COMMAND_VALUE         32834
+#define _APS_NEXT_COMMAND_VALUE         32838
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

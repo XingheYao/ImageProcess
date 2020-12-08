@@ -204,6 +204,7 @@
     <ClInclude Include="Dib.h" />
     <ClInclude Include="EdgeDetection.h" />
     <ClInclude Include="FileView.h" />
+    <ClInclude Include="FLIC.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="geometricTransformation.h" />
     <ClInclude Include="ImageEffects.h" />
@@ -211,6 +212,7 @@
     <ClInclude Include="ImageProcess.h" />
     <ClInclude Include="ImageProcessDoc.h" />
     <ClInclude Include="ImageProcessView.h" />
+    <ClInclude Include="ImageSmoothing.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="PatternMatching.h" />
@@ -227,12 +229,14 @@
     <ClCompile Include="ClassView.cpp" />
     <ClCompile Include="EdgeDetection.cpp" />
     <ClCompile Include="FileView.cpp" />
+    <ClCompile Include="FLIC.cpp" />
     <ClCompile Include="geometricTransformation.cpp" />
     <ClCompile Include="ImageEffects.cpp" />
     <ClCompile Include="ImageEnhancement.cpp" />
     <ClCompile Include="ImageProcess.cpp" />
     <ClCompile Include="ImageProcessDoc.cpp" />
     <ClCompile Include="ImageProcessView.cpp" />
+    <ClCompile Include="ImageSmoothing.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
     <ClCompile Include="PatternMatching.cpp" />

@@ -10,6 +10,7 @@
 #include "ImageEffects.h"
 #include "EdgeDetection.h"
 #include "ImageEnhancement.h"
+#include "ImageSmoothing.h"
 class CImageProcessView : public CView
 {
 protected: // 仅从序列化创建
@@ -82,6 +83,8 @@ public:
 	afx_msg void OnPiecewiselinearenhancement();
 	afx_msg void OnNonlinearenhancement();
 	afx_msg void OnHistogramenhancement();
+	afx_msg void OnMeansmoothing();
+	afx_msg void OnWeightedmeansmoothing();
 };
 
 #ifndef _DEBUG  // ImageProcessView.cpp 中的调试版本

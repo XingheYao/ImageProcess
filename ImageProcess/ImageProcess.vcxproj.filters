@@ -78,6 +78,12 @@
     <ClInclude Include="ImageEnhancement.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ImageSmoothing.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FLIC.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImageProcess.cpp">
@@ -132,6 +138,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ImageEnhancement.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageSmoothing.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FLIC.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
