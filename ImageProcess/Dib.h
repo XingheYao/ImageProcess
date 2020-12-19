@@ -40,6 +40,7 @@ public:
 	DWORD GetNumOfColor();								//获取位图颜色数
 	LPRGBQUAD GetRgbQuad();								//获取位图颜色表
 	LPBYTE GetData();									//获取位图数据
+	double* GetDData();									//获取double类型位图数据指针
 	LPBITMAPFILEHEADER GetBmpFileHeader();              //获取位图文件头指针
 	LPBITMAPINFO GetlpBmpInfo();						//获取位图信息指针
 	LPBYTE GetlpDib();									//获取位图指针
@@ -47,6 +48,12 @@ public:
 	BOOL Draw(CDC* pDC, CPoint origin, CSize size);		//显示位图
 	BOOL RgbToGrade();									//24位彩色位图转8位灰度位图
 	BOOL GradeToRgb();									//8位灰度位图转24位彩色位图
+	BOOL RgbToXYZ(const BYTE sR, const BYTE  sG, const BYTE sB,
+		double& X, double& Y, double& Z);				//RGB转换成XYZ格式
+	BOOL RgbToLab();									//RGB转换成LAB格式
+	BOOL XYZToRgb(BYTE& R, BYTE& G, BYTE& B,
+		const double& X, const double& Y, const double& Z);//XYZ转换RGB成格式
+	BOOL LabToRgb();									//LAB转换成RGB格式
 	BOOL HasRgbQuad();									//判断是否含有颜色表
 	BOOL IsGrade();										//判断是否是灰度图
 	BOOL IsValid();										//判断位图是否有效
@@ -72,4 +79,5 @@ private:
 	HPALETTE m_hPalette;								//调色板句柄
 	BOOL m_bHasRgbQuad;									//是否有颜色表
 	BOOL m_bValid;										//位图是否有效
+	double* m_lpDData;									//位图数据double型指针（需复制lpData）
 };

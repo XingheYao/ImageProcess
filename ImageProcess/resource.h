@@ -151,13 +151,17 @@
 #define ID_MeanSmoothing                32835
 #define ID_32836                        32836
 #define ID_WeightedMeanSmoothing        32837
+#define ID_32838                        32838
+#define ID_FLIC                         32839
+#define ID_32840                        32840
+#define ID_SLIC                         32841
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        310
-#define _APS_NEXT_COMMAND_VALUE         32838
+#define _APS_NEXT_COMMAND_VALUE         32842
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

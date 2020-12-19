@@ -77,20 +77,24 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
-    <IncludePath>G:\ImageProcess\ImageProcess\modules\jpeglib-9c\include;modules\jpeglib-9c\include;$(IncludePath)</IncludePath>
-    <LibraryPath>G:\ImageProcess\ImageProcess\modules\jpeglib-9c\lib;modules\jpeglib-9c\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>G:\ImageProcess\ImageProcess\modules\jpeglib-9c\include;G:\ImageProcess\ImageProcess\opencv\build\include;G:\ImageProcess\ImageProcess\modules\jpeglib-9c\include;modules\jpeglib-9c\include;$(IncludePath)</IncludePath>
+    <LibraryPath>G:\ImageProcess\ImageProcess\modules\jpeglib-9c\lib;G:\ImageProcess\ImageProcess\opencv\build\x64\vc12\lib;G:\ImageProcess\ImageProcess\modules\jpeglib-9c\lib;modules\jpeglib-9c\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
-    <LibraryPath>G:\ImageProcess\ImageProcess\modules\jpeglib-9c\lib;modules\jpeglib-9c\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>G:\ImageProcess\ImageProcess\modules\jpeglib-9c\include;modules\jpeglib-9c\include;$(IncludePath)</IncludePath>
+    <LibraryPath>G:\ImageProcess\ImageProcess\modules\jpeglib-9c\lib;G:\ImageProcess\ImageProcess\opencv\build\x64\vc12\lib;G:\ImageProcess\ImageProcess\modules\jpeglib-9c\lib;modules\jpeglib-9c\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>G:\ImageProcess\ImageProcess\modules\jpeglib-9c\include;G:\ImageProcess\ImageProcess\opencv\build\include;G:\ImageProcess\ImageProcess\modules\jpeglib-9c\include;modules\jpeglib-9c\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>G:\ImageProcess\ImageProcess\modules\jpeglib-9c\include;G:\ImageProcess\ImageProcess\opencv\build\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>G:\ImageProcess\ImageProcess\modules\jpeglib-9c\lib;G:\ImageProcess\ImageProcess\opencv\build\x64\vc12\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>G:\ImageProcess\ImageProcess\modules\jpeglib-9c\include;G:\ImageProcess\ImageProcess\opencv\build\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>G:\ImageProcess\ImageProcess\modules\jpeglib-9c\lib;G:\ImageProcess\ImageProcess\opencv\build\x64\vc12\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -100,11 +104,11 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>modules\jpeglib-9c\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>G:\ImageProcess\opencv\build\include;modules\jpeglib-9c\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>libjpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libjpeg.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>modules\jpeglib-9c\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Midl>
@@ -126,12 +130,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>modules\jpeglib-9c\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>G:\ImageProcess\opencv\build\include;modules\jpeglib-9c\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>modules\jpeglib-9c\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libjpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libjpeg.lib;</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -154,11 +158,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>G:\ImageProcess\opencv\build\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>libjpeg.lib;</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -181,11 +187,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>G:\ImageProcess\opencv\build\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>libjpeg.lib;</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -219,6 +227,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="PropertiesWnd.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SLIC.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ViewTree.h" />
@@ -247,6 +256,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PropertiesWnd.cpp" />
+    <ClCompile Include="SLIC.cpp" />
     <ClCompile Include="StdAfx.cpp" />
     <ClCompile Include="ViewTree.cpp" />
   </ItemGroup>

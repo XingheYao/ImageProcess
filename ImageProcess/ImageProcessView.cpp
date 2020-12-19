@@ -59,6 +59,8 @@ BEGIN_MESSAGE_MAP(CImageProcessView, CView)
 	ON_COMMAND(ID_HistogramEnhancement, &CImageProcessView::OnHistogramenhancement)
 	ON_COMMAND(ID_MeanSmoothing, &CImageProcessView::OnMeansmoothing)
 	ON_COMMAND(ID_WeightedMeanSmoothing, &CImageProcessView::OnWeightedmeansmoothing)
+	ON_COMMAND(ID_FLIC, &CImageProcessView::OnFlic)
+	ON_COMMAND(ID_SLIC, &CImageProcessView::OnSlic)
 END_MESSAGE_MAP()
 
 // CImageProcessView 构造/析构
@@ -302,14 +304,15 @@ void CImageProcessView::OnShowOrigin()
 	/*LPBYTE TempData = (pTest->GetData());
 	for (int i = 0; i < 5 * pTest->GetLineByte(); ++i)
 		TempData[i] = 0;*/
-	pTest->RgbToGrade();
-	LPBYTE lpData = pTest->GetData();
+	pTest->RgbToLab();
+	pTest->LabToRgb();
+	/*LPBYTE lpData = pTest->GetData();
 	for (int i = 100; i < 120; ++i)
 		for(int j = 100; j< 120 ; ++j)
 		{
 			 *(lpData + pTest->GetLineByte() * (i -100) + j+100 ) = 255;
 
-		}
+		}*/
 	pTest->m_title = "测试图像";
 	m_pAllImages[1] = pTest;
 	Invalidate();
@@ -741,5 +744,37 @@ void CImageProcessView::OnWeightedmeansmoothing()
 	//pTest->RgbToGrade();
 	ImageSmoothing* pImageSmoothing = new ImageSmoothing();
 	pImageSmoothing->WeightedMeanSmoothing(pTest, m_pAllImages);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnFlic()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	//CDib* pTest = new CDib(*m_pAllImages[0]);
+	//pTest->RgbToGrade();
+	FLIC* pImageSuperPixels = new FLIC();
+	pImageSuperPixels->superPixels(m_pAllImages[0], m_pAllImages, 800);
+	Invalidate();
+}
+
+
+void CImageProcessView::OnSlic()
+{
+	// TODO: 在此添加命令处理程序代码
+	if (!m_pAllImages[0]) {
+		//printf("请先打开一幅图像(.BMP或.JPG格式)！");
+		MessageBox(L"请先打开一幅图像(.BMP或.JPG格式)！");
+		return;
+	}
+	//CDib* pTest = new CDib(*m_pAllImages[0]);
+	//pTest->RgbToGrade();
+	SLIC* pImageSuperPixels = new SLIC();
+	pImageSuperPixels->superPixels(m_pAllImages[0], m_pAllImages, 1000);
 	Invalidate();
 }

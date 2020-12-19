@@ -11,6 +11,9 @@
 #include "EdgeDetection.h"
 #include "ImageEnhancement.h"
 #include "ImageSmoothing.h"
+#include "FLIC.h"
+#include "SLIC.h"
+
 class CImageProcessView : public CView
 {
 protected: // 仅从序列化创建
@@ -85,6 +88,8 @@ public:
 	afx_msg void OnHistogramenhancement();
 	afx_msg void OnMeansmoothing();
 	afx_msg void OnWeightedmeansmoothing();
+	afx_msg void OnFlic();
+	afx_msg void OnSlic();
 };
 
 #ifndef _DEBUG  // ImageProcessView.cpp 中的调试版本

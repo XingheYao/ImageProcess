@@ -1,0 +1,14 @@
+# Package Information for pkg-config
+
+prefix=G:/ImageProcess/opencv/sources/out/install/x64-Debug (默认值)
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir_old=${prefix}/include/opencv
+includedir_new=${prefix}/include
+
+Name: OpenCV
+Description: Open Source Computer Vision Library
+Version: 3.0.0
+Libs: -L${exec_prefix}/lib -lopencv_shape300d -lopencv_stitching300d -lopencv_objdetect300d -lopencv_superres300d -lopencv_videostab300d -lopencv_calib3d300d -lopencv_features2d300d -lopencv_highgui300d -lopencv_videoio300d -lopencv_imgcodecs300d -lopencv_video300d -lopencv_photo300d -lopencv_ml300d -lopencv_imgproc300d -lopencv_flann300d -lopencv_core300d -lopencv_hal300d
+Libs.private: -lcomctl32 -lgdi32 -lole32 -lsetupapi -lws2_32 -lvfw32
+Cflags: -I${includedir_old} -I${includedir_new}

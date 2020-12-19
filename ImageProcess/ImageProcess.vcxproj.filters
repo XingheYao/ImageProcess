@@ -84,6 +84,9 @@
     <ClInclude Include="FLIC.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="SLIC.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImageProcess.cpp">
@@ -144,6 +147,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="FLIC.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SLIC.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

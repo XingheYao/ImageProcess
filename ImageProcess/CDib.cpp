@@ -21,10 +21,11 @@ CDib::CDib(void)
 	m_hPalette = nullptr;
 	m_bHasRgbQuad = FALSE;
 	m_bValid = FALSE;
-
+	m_lpDData = nullptr;
 }
 CDib::CDib(CDib& rhs)
 {
+	m_lpDData = nullptr;
 	//Empty(TRUE);//清理空间
 	//为位图文件头分配空间，并初始化为0
 	m_lpBmpFileHeader = (LPBITMAPFILEHEADER)new BYTE[sizeof(BITMAPFILEHEADER)];
@@ -535,6 +536,15 @@ LPBYTE CDib::GetlpDib()
 	return m_lpDib;
 }
 //=============================================
+//函数功能：获取double像素数据指针
+//输入参数：无
+//返回值：LPBITMAPINFO表示m_lpBmpInfo
+//==============================================
+double* CDib::GetDData()
+{
+	return m_lpDData;
+}
+//=============================================
 //函数功能：获取位图数据
 //输入参数：无
 //返回值：LPBITMAPINFO表示m_lpBmpInfo
@@ -657,7 +667,7 @@ BOOL CDib::RgbToGrade()
 				m_lpData[i * uGradeBmpLineByte + j] = (BYTE)(0.299 * r + 0.587 * g + 0.114 * b);
 			}
 		}
-		delete[]lpInitBmpData;//删除创建的原始数据指针
+		delete[] lpInitBmpData;//删除创建的原始数据指针
 	}
 	
 	return TRUE;
@@ -693,7 +703,225 @@ BOOL CDib::GradeToRgb()
 				m_lpData[i * uColorBmpLineByte + 3 * j + 2] = btValue;
 			}
 		}
-		delete[]lpInitBmpData;//删除创建的原始数据指针
+		delete[] lpInitBmpData;//删除创建的原始数据指针
+	}
+	return TRUE;
+}
+//=============================================
+//函数功能：RGB转XYZ
+//输入参数：无
+//返回值：BOOL-TRUE表示成功，FALSE表示失败
+//==============================================
+BOOL CDib::RgbToXYZ(const BYTE sR, const BYTE  sG, const BYTE sB, double& X, double& Y, double& Z)
+{
+	double R, G, B, r, g, b;
+	R = sR / 255.0;
+	G = sG / 255.0;
+	B = sB / 255.0;
+	if (R <= 0.04045)	r = R / 12.92;
+	else				r = pow((R + 0.055) / 1.055, 2.4);
+	if (G <= 0.04045)	g = G / 12.92;
+	else				g = pow((G + 0.055) / 1.055, 2.4);
+	if (B <= 0.04045)	b = B / 12.92;
+	else				b = pow((B + 0.055) / 1.055, 2.4);
+	X = r * 0.4124564 + g * 0.3575761 + b * 0.1804375;
+	Y = r * 0.2126729 + g * 0.7151522 + b * 0.0721750;
+	Z = r * 0.0193339 + g * 0.1191920 + b * 0.9503041;
+	return TRUE;
+}
+//=============================================
+//函数功能：RGB转LAB格式
+//输入参数：无
+//返回值：BOOL-TRUE表示成功，FALSE表示失败
+//==============================================
+BOOL CDib::RgbToLab()
+{
+	if (!IsValid())
+	{
+		return FALSE;//位图无效则返回失败
+	}
+	if (GetBitCount() != 24)
+	{
+		return FALSE;//不是24位位图，返回失败
+	}
+	if (m_lpBmpInfoHeader->biCompression != BI_RGB)
+	{
+		return FALSE;//压缩位图失败返回
+	}
+	if (!IsGrade())//如果不是灰度位图，才需要转换
+	{
+		//获取源位图信息
+		LONG lHeight = GetHeight();
+		LONG lWidth = GetWidth();
+		UINT uLineByte = GetLineByte();
+		double r, g, b, R, G, B, sR, sG, sB;
+		double X, Y, Z;
+		double lval, aval, bval;
+		if (m_lpDData)
+		{
+			delete[] m_lpDData;
+			m_lpDData = nullptr;
+		}
+		//LPBYTE lpInitBmpData = createColorBmp(lWidth, lHeight);//创建彩色位图数据处理，并得到备份图像像素值
+		UINT uGradeBmpLineByte = GetLineByte();
+		m_lpDData = new double[3 * lHeight * lWidth];
+		memset(m_lpDData, 0, sizeof(double) * 3 * lHeight * lWidth);
+		for (int i = 0; i < lHeight; ++i)
+		{
+			for (int j = 0; j < lWidth; ++j)
+			{
+
+				sB = m_lpData[i * uLineByte + 3 * j];
+				sG = m_lpData[i * uLineByte + 3 * j + 1];
+				sR = m_lpData[i * uLineByte + 3 * j + 2];
+				RgbToXYZ(sR, sG, sB, X, Y, Z);
+				//------------------------
+				// XYZ to LAB conversion
+				//------------------------
+				double epsilon = 0.008856;	//actual CIE standard
+				double kappa = 903.3;		//actual CIE standard
+
+				double Xr = 0.950456;	//reference white
+				double Yr = 1.0;		//reference white
+				double Zr = 1.088754;	//reference white
+
+				double xr = X / Xr;
+				double yr = Y / Yr;
+				double zr = Z / Zr;
+
+				double fx, fy, fz;
+				if (xr > epsilon)	fx = pow(xr, 1.0 / 3.0);
+				else				fx = (kappa * xr + 16.0) / 116.0;
+				if (yr > epsilon)	fy = pow(yr, 1.0 / 3.0);
+				else				fy = (kappa * yr + 16.0) / 116.0;
+				if (zr > epsilon)	fz = pow(zr, 1.0 / 3.0);
+				else				fz = (kappa * zr + 16.0) / 116.0;
+
+				lval = 116.0 * fy - 16.0;
+				aval = 500.0 * (fx - fy);
+				bval = 200.0 * (fy - fz);
+
+				m_lpDData[i * 3 * lWidth + 3 * j] = lval;
+				m_lpDData[i * 3 * lWidth + 3 * j + 1] = aval;
+				m_lpDData[i * 3 * lWidth + 3 * j + 2] = bval;
+			}
+		}
+		//delete[]lpInitBmpData;//删除创建的原始数据指针
+	}
+	return TRUE;
+}
+//=============================================
+//函数功能：LAB转RGB格式
+//输入参数：无
+//返回值：BOOL-TRUE表示成功，FALSE表示失败
+//==============================================
+float gamma_XYZ2RGB(double x)
+{
+	return x > 0.0031308 ? (1.055f * powf(x, (1 / 2.4f)) - 0.055) : (x * 12.92);
+};
+BOOL CDib::XYZToRgb(BYTE& R, BYTE& G, BYTE& B,
+	const double& X, const double& Y, const double& Z)
+{
+	float RR, GG, BB;
+	RR = 3.2404542f * X - 1.5371385f * Y - 0.4985314f * Z;
+	GG = -0.9692660f * X + 1.8760108f * Y + 0.0415560f * Z;
+	BB = 0.0556434f * X - 0.2040259f * Y + 1.0572252f * Z;
+
+	RR = gamma_XYZ2RGB(RR);
+	GG = gamma_XYZ2RGB(GG);
+	BB = gamma_XYZ2RGB(BB);
+
+	RR = RR * 255.0 + 0.5;
+	if (RR > 255)
+		RR = 255;
+	else if (RR < 0)
+		RR = 0;
+	GG = GG * 255.0 + 0.5;
+	if (GG > 255)
+		GG = 255;
+	else if (GG < 0)
+		GG = 0;
+	BB = BB * 255.0 + 0.5;
+	if (BB > 255)
+		BB = 255;
+	else if (BB < 0)
+		BB = 0;
+
+	R = (BYTE)RR;
+	G = (BYTE)GG;
+	B = (BYTE)BB;
+	return TRUE;
+}
+//=============================================
+//函数功能：LAB转RGB格式
+//输入参数：无
+//返回值：BOOL-TRUE表示成功，FALSE表示失败
+//==============================================
+BOOL CDib::LabToRgb()
+{
+	if (!IsValid())
+	{
+		return FALSE;//位图无效则返回失败
+	}
+	if (GetBitCount() != 24)
+	{
+		return FALSE;//不是24位位图，返回失败
+	}
+	if (m_lpBmpInfoHeader->biCompression != BI_RGB)
+	{
+		return FALSE;//压缩位图失败返回
+	}
+	if (!IsGrade())//如果不是灰度位图，才需要转换
+	{
+		//获取源位图信息
+
+		const double param_16116 = 16.0f / 116.0f;
+		LONG lHeight = GetHeight();
+		LONG lWidth = GetWidth();
+		UINT uLineByte = GetLineByte();
+		double r, g, b, sR, sG, sB;
+		double X, Y, Z;
+		BYTE R, G, B;
+		double lval, aval, bval;
+		//LPBYTE lpInitBmpData = createColorBmp(lWidth, lHeight);//创建彩色位图数据处理，并得到备份图像像素值
+		UINT uBmpLineByte = GetLineByte();
+		for (int i = 0; i < lHeight; ++i)
+		{
+			for (int j = 0; j < lWidth; ++j)
+			{
+				lval = m_lpDData[i * 3 * lWidth + 3 * j];
+				aval = m_lpDData[i * 3 * lWidth + 3 * j + 1];
+				bval = m_lpDData[i * 3 * lWidth + 3 * j + 2];
+				double dX, dY, dZ;
+
+				dY = (lval + 16.0f) / 116.0;
+				dX = aval / 500.0f + dY;
+				dZ = dY - bval / 200.0f;
+				if (powf(dY, 3.0) > 0.008856)
+					Y = powf(dY, 3.0);
+				else
+					Y = (dY - param_16116) / 7.787f;
+
+				if (powf(dX, 3.0) > 0.008856)
+					X = dX * dX * dX;
+				else
+					X = (dX - param_16116) / 7.787f;
+
+				if (powf(dZ, 3.0) > 0.008856)
+					Z = dZ * dZ * dZ;
+				else
+					Z = (dZ - param_16116) / 7.787f;
+
+				XYZToRgb(R, G, B, X, Y, Z);
+				m_lpData[i * uBmpLineByte + 3 * j] = B;
+				m_lpData[i * uBmpLineByte + 3 * j + 1] = G;
+				m_lpData[i * uBmpLineByte + 3 * j + 2] = R;
+			}
+		}
+		if (m_lpDData)
+			delete[] m_lpDData;
+		m_lpDData = nullptr;
+		//delete[] lpInitBmpData;//删除创建的原始数据指针
 	}
 	return TRUE;
 }
@@ -701,7 +929,7 @@ BOOL CDib::GradeToRgb()
 //函数功能：判断是否含有颜色表
 //输入参数：无
 //返回值：TRUE表示含有颜色表，FALSE表示不含颜色表
-//==============================================
+//==============================================									
 BOOL CDib::HasRgbQuad()
 {
 	return m_bHasRgbQuad;
@@ -731,6 +959,11 @@ BOOL CDib::IsValid()
 //==============================================
 void CDib::Empty(BOOL bFlag)
 {
+	if (m_lpDData)
+	{
+		delete[] m_lpDData;
+		m_lpDData = nullptr;
+	}
 	if (bFlag) {
 		m_fileName = "";//文件名清空
 		m_title = "";//标题名清空
@@ -867,10 +1100,10 @@ void CDib::rotate(float fAngle)
 LPBYTE CDib::createGradeBmp(LONG width, LONG height, bool IsBackup)
 {
 	//将原图像数据备份
-	LONG lInitSize = GetHeight() * GetLineByte();
 	LPBYTE initData = nullptr;
 	if (TRUE == IsBackup)
 	{
+		LONG lInitSize = GetHeight() * GetLineByte();
 		initData = (LPBYTE) new BYTE[lInitSize];
 		memcpy(initData, m_lpData, lInitSize);
 	}
@@ -934,9 +1167,9 @@ LPBYTE CDib::createGradeBmp(LONG width, LONG height, bool IsBackup)
 	return initData;
 }
 //=============================================
-//函数功能：新建空白彩色位图（不需要将原图像数据备份）
-//输入参数：位图文件头指针，位图指针，图像高度，图像宽度
-//返回值：原图像数据指针（记得释放内存空间）
+//函数功能：新建空白彩色位图（）
+//输入参数：图像高度，图像宽度  IsBackup是否备份
+//返回值：不备份则返回nullptr 否则返回原图像数据备份指针（记得释放内存空间）
 //==============================================
 LPBYTE CDib::createColorBmp( LONG width, LONG height, bool IsBackup)
 {
